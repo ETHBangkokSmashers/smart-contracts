@@ -119,12 +119,6 @@ const config: HardhatUserConfig = {
           apiURL: "https://api.lineascan.build/api",
           browserURL: "https://lineascan.build",
         },
-        /*
-        urls: {
-          apiURL: "https://explorer.linea.build/api",
-          browserURL: "https://explorer.linea.build"
-        }
-        */
       },
       {
         network: "hederaTestnet",
