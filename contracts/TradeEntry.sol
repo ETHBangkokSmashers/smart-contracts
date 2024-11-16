@@ -1,17 +1,43 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.27;
 
-import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
-import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {SafeCast} from "@openzeppelin/contracts/utils/math/SafeCast.sol";
+import {
+    OwnableUpgradeable
+} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {
+    EIP712Upgradeable
+} from "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
+import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import {
+    IERC20,
+    SafeERC20
+} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import { SafeCast } from "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
-import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+import {
+    AggregatorV3Interface
+} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
-import {TradeParams, TradeDetails, TradeStatus, BasicTradeDirection, CHAINLINK_DATA_SOURCE_ID, PYTH_DATA_SOURCE_ID} from "./Structs.sol";
-import {ITradeEntry} from "./interfaces/ITradeEntry.sol";
-import {InvalidSignature, UnavailableAssetOrDataSource, NotTradeAcceptor, AcceptionDeadlinePassed, WrongTradeStatus, NotTradeInitiator, TradeNotExpired, InvalidChainlinkRoundId, InvalidDataSource} from "./utils/Errors.sol";
+import {
+    TradeParams,
+    TradeDetails,
+    TradeStatus,
+    BasicTradeDirection,
+    CHAINLINK_DATA_SOURCE_ID,
+    PYTH_DATA_SOURCE_ID
+} from "./Structs.sol";
+import { ITradeEntry } from "./interfaces/ITradeEntry.sol";
+import {
+    InvalidSignature,
+    UnavailableAssetOrDataSource,
+    NotTradeAcceptor,
+    AcceptionDeadlinePassed,
+    WrongTradeStatus,
+    NotTradeInitiator,
+    TradeNotExpired,
+    InvalidChainlinkRoundId,
+    InvalidDataSource
+} from "./utils/Errors.sol";
 
 contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
     using SafeERC20 for IERC20;
