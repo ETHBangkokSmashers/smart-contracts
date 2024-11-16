@@ -1,6 +1,4 @@
-import { ethers, network } from "hardhat";
-import fs from "fs";
-import { TradeEntry } from "../typechain-types";
+import { network } from "hardhat";
 import { Config } from "./configs";
 import {
   BTC_ASSET_ID,
@@ -10,16 +8,7 @@ import {
   ETH_PRICE_FEED_ID,
   PYTH_DATA_SOURCE_ID,
 } from "../test/utils";
-
-async function getTradeEntry(): Promise<TradeEntry> {
-  const { chainId } = await ethers.provider.getNetwork();
-
-  const deployedAddressesPath = `ignition/deployments/chain-${chainId}/deployed_addresses.json`;
-  const addresses = JSON.parse(fs.readFileSync(deployedAddressesPath, "utf8"));
-  const tradeEntryAddress = addresses["TradeEntry#TradeEntry"];
-
-  return await ethers.getContractAt("TradeEntry", tradeEntryAddress);
-}
+import { getTradeEntry } from "./utils";
 
 async function main() {
   const tradeEntry = await getTradeEntry();

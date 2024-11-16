@@ -6,7 +6,10 @@ dotenv.config();
 
 const networkConfig = (url: string | null | undefined) => ({
   url: url || "",
-  accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+  accounts:
+    process.env.DEPLOYER_PRIVATE_KEY && process.env.ACCEPTOR_PRIVATE_KEY
+      ? [process.env.DEPLOYER_PRIVATE_KEY, process.env.ACCEPTOR_PRIVATE_KEY]
+      : [],
 });
 
 const config: HardhatUserConfig = {
