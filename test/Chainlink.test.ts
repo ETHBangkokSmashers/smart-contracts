@@ -40,12 +40,12 @@ describe("TradeEntry", function () {
       await ethers.getContractFactory("TestChainlinkFeed");
     const btcFeed = await TestChainlinkFeedFactory.deploy();
 
-    await tradeEntry.setAssetDataSourceAllowed(
-      BTC_ASSET_ID,
+    await tradeEntry.setAssetsDataSourceAllowed(
+      [BTC_ASSET_ID],
       CHAINLINK_DATA_SOURCE_ID,
       true,
     );
-    await tradeEntry.setChainlinkAssetPriceFeed(BTC_ASSET_ID, btcFeed);
+    await tradeEntry.configureChainlinkFeeds([BTC_ASSET_ID], [btcFeed]);
 
     return { tradeEntry, usdc, btcFeed };
   }

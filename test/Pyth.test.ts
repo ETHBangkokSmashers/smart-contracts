@@ -25,7 +25,7 @@ describe("TradeEntry", function () {
   let tradeEntry: TradeEntry, usdc: TestERC20, pyth: TestPyth;
   let defaultTradeParams: TradeParamsStruct;
 
-  async function deployChainlinkFixture() {
+  async function deployPythFixture() {
     [owner, other, third] = await ethers.getSigners();
 
     const TradeEntryFactory = await ethers.getContractFactory("TradeEntry");
@@ -42,19 +42,19 @@ describe("TradeEntry", function () {
     const TestPythFactory = await ethers.getContractFactory("TestPyth");
     const pyth = await TestPythFactory.deploy();
 
-    await tradeEntry.setAssetDataSourceAllowed(
-      BTC_ASSET_ID,
+    await tradeEntry.setAssetsDataSourceAllowed(
+      [BTC_ASSET_ID],
       PYTH_DATA_SOURCE_ID,
       true,
     );
     await tradeEntry.setPyth(pyth);
-    await tradeEntry.setPythAssetFeedId(BTC_ASSET_ID, BTC_PRICE_FEED_ID);
+    await tradeEntry.configurePythFeeds([BTC_ASSET_ID], [BTC_PRICE_FEED_ID]);
 
     return { tradeEntry, usdc, pyth };
   }
 
   this.beforeEach(async function () {
-    ({ tradeEntry, usdc, pyth } = await loadFixture(deployChainlinkFixture));
+    ({ tradeEntry, usdc, pyth } = await loadFixture(deployPythFixture));
 
     const timestamp = await time.latest();
     defaultTradeParams = {

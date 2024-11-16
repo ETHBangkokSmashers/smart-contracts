@@ -20,3 +20,5 @@ error InvalidChainlinkRoundId();
 error InvalidDataSource();
 
 error InvalidPythResponse();
+
+error LengthMismatch();

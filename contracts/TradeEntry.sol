@@ -38,7 +38,8 @@ import {
     TradeNotExpired,
     InvalidChainlinkRoundId,
     InvalidDataSource,
-    InvalidPythResponse
+    InvalidPythResponse,
+    LengthMismatch
 } from "./utils/Errors.sol";
 
 contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
@@ -87,30 +88,38 @@ contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
 
     // CONFIGURATION FUNCTIONS
 
-    function setAssetDataSourceAllowed(
-        uint32 assetId,
+    function setAssetsDataSourceAllowed(
+        uint32[] calldata assetIds,
         uint8 dataSourceId,
         bool allowed
     ) external onlyOwner {
-        assetDataSourceAllowed[assetId][dataSourceId] = allowed;
+        for (uint256 i = 0; i < assetIds.length; i++) {
+            assetDataSourceAllowed[assetIds[i]][dataSourceId] = allowed;
+        }
     }
 
-    function setChainlinkAssetPriceFeed(
-        uint32 assetId,
-        address feedAddress
+    function configureChainlinkFeeds(
+        uint32[] calldata assetIds,
+        address[] calldata feedAddresses
     ) external onlyOwner {
-        chainlinkAssetPriceFeeds[assetId] = feedAddress;
+        require(assetIds.length == feedAddresses.length, LengthMismatch());
+        for (uint256 i = 0; i < assetIds.length; i++) {
+            chainlinkAssetPriceFeeds[assetIds[i]] = feedAddresses[i];
+        }
     }
 
     function setPyth(IPyth _pyth) external onlyOwner {
         pyth = _pyth;
     }
 
-    function setPythAssetFeedId(
-        uint32 assetId,
-        bytes32 feedId
+    function configurePythFeeds(
+        uint32[] calldata assetIds,
+        bytes32[] calldata feedIds
     ) external onlyOwner {
-        pythAssetFeedIds[assetId] = feedId;
+        require(assetIds.length == feedIds.length, LengthMismatch());
+        for (uint256 i = 0; i < assetIds.length; i++) {
+            pythAssetFeedIds[assetIds[i]] = feedIds[i];
+        }
     }
 
     // MUTATIVE FUNCTIONS
