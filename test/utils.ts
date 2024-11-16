@@ -27,6 +27,11 @@ export enum TradeStatus {
   Settled,
 }
 
+export const BTC_PRICE_FEED_ID =
+  "0xe62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43";
+export const ETH_PRICE_FEED_ID =
+  "0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace";
+
 // Signature
 
 export const DomainTradeEntry = async (tradeEntry: TradeEntry) => {
@@ -59,22 +64,22 @@ export const TypesTradeParams = {
 export async function signTrade(
   signer: ethers.Signer,
   tradeEntry: TradeEntry,
-  params: TradeParamsStruct
+  params: TradeParamsStruct,
 ) {
   return await signer.signTypedData(
     await DomainTradeEntry(tradeEntry),
     TypesTradeParams,
-    params
+    params,
   );
 }
 
 export async function hashTrade(
   tradeEntry: TradeEntry,
-  params: TradeParamsStruct
+  params: TradeParamsStruct,
 ) {
   return hre.ethers.TypedDataEncoder.hash(
     await DomainTradeEntry(tradeEntry),
     TypesTradeParams,
-    params
+    params,
   );
 }

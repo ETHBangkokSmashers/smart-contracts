@@ -4,13 +4,12 @@ import {
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
-import hre, { ethers } from "hardhat";
+import { ethers } from "hardhat";
 import { Signer } from "ethers";
 import { TradeEntry, TestERC20, TestChainlinkFeed } from "../typechain-types";
 import {
   BTC_ASSET_ID,
   CHAINLINK_DATA_SOURCE_ID,
-  DomainTradeEntry,
   hashTrade,
   signTrade,
   TradeDirection,
@@ -37,15 +36,14 @@ describe("TradeEntry", function () {
     await usdc.approve(tradeEntry, ethers.parseUnits("10000"));
     await usdc.connect(other).approve(tradeEntry, ethers.parseUnits("10000"));
 
-    const TestChainlinkFeedFactory = await ethers.getContractFactory(
-      "TestChainlinkFeed"
-    );
+    const TestChainlinkFeedFactory =
+      await ethers.getContractFactory("TestChainlinkFeed");
     const btcFeed = await TestChainlinkFeedFactory.deploy();
 
     await tradeEntry.setAssetDataSourceAllowed(
       BTC_ASSET_ID,
       CHAINLINK_DATA_SOURCE_ID,
-      true
+      true,
     );
     await tradeEntry.setChainlinkAssetPriceFeed(BTC_ASSET_ID, btcFeed);
 
@@ -77,7 +75,7 @@ describe("TradeEntry", function () {
       const sig = await signTrade(other, tradeEntry, defaultTradeParams);
 
       await expect(
-        tradeEntry.connect(other).startTrade(defaultTradeParams, sig)
+        tradeEntry.connect(other).startTrade(defaultTradeParams, sig),
       ).to.be.revertedWithCustomError(tradeEntry, "InvalidSignature");
     });
 
@@ -89,10 +87,10 @@ describe("TradeEntry", function () {
       const sig = await signTrade(owner, tradeEntry, tradeParams);
 
       await expect(
-        tradeEntry.connect(other).startTrade(tradeParams, sig)
+        tradeEntry.connect(other).startTrade(tradeParams, sig),
       ).to.be.revertedWithCustomError(
         tradeEntry,
-        "UnavailableAssetOrDataSource"
+        "UnavailableAssetOrDataSource",
       );
     });
 
@@ -104,10 +102,10 @@ describe("TradeEntry", function () {
       const sig = await signTrade(owner, tradeEntry, tradeParams);
 
       await expect(
-        tradeEntry.connect(other).startTrade(tradeParams, sig)
+        tradeEntry.connect(other).startTrade(tradeParams, sig),
       ).to.be.revertedWithCustomError(
         tradeEntry,
-        "UnavailableAssetOrDataSource"
+        "UnavailableAssetOrDataSource",
       );
     });
 
@@ -119,7 +117,7 @@ describe("TradeEntry", function () {
       const sig = await signTrade(owner, tradeEntry, tradeParams);
 
       await expect(
-        tradeEntry.connect(other).startTrade(tradeParams, sig)
+        tradeEntry.connect(other).startTrade(tradeParams, sig),
       ).to.be.revertedWithCustomError(tradeEntry, "NotTradeAcceptor");
     });
 
@@ -131,7 +129,7 @@ describe("TradeEntry", function () {
       const sig = await signTrade(owner, tradeEntry, tradeParams);
 
       await expect(
-        tradeEntry.connect(other).startTrade(tradeParams, sig)
+        tradeEntry.connect(other).startTrade(tradeParams, sig),
       ).to.be.revertedWithCustomError(tradeEntry, "AcceptionDeadlinePassed");
     });
 
@@ -154,7 +152,7 @@ describe("TradeEntry", function () {
           ethers.parseUnits("-100"),
           ethers.parseUnits("-100"),
           ethers.parseUnits("200"),
-        ]
+        ],
       );
 
       const details = await tradeEntry.tradeDetails(tradeHash);
@@ -167,7 +165,7 @@ describe("TradeEntry", function () {
       await tradeEntry.connect(other).startTrade(defaultTradeParams, sig);
 
       await expect(
-        tradeEntry.connect(other).startTrade(defaultTradeParams, sig)
+        tradeEntry.connect(other).startTrade(defaultTradeParams, sig),
       ).to.be.revertedWithCustomError(tradeEntry, "WrongTradeStatus");
     });
   });
@@ -184,20 +182,20 @@ describe("TradeEntry", function () {
 
       it("reverts settling non-existent trade", async function () {
         await expect(
-          tradeEntry.settleTrade({ ...defaultTradeParams, nonce: 325 }, "0x")
+          tradeEntry.settleTrade({ ...defaultTradeParams, nonce: 325 }, "0x"),
         ).to.be.revertedWithCustomError(tradeEntry, "WrongTradeStatus");
       });
 
       it("reverts settling non-expired trade", async function () {
         await expect(
-          tradeEntry.settleTrade(defaultTradeParams, "0x")
+          tradeEntry.settleTrade(defaultTradeParams, "0x"),
         ).to.be.revertedWithCustomError(tradeEntry, "TradeNotExpired");
       });
 
       it("reverts settling if there's no extra data (round id)", async function () {
         await time.increase(24 * 3600);
         await expect(
-          tradeEntry.settleTrade(defaultTradeParams, "0x")
+          tradeEntry.settleTrade(defaultTradeParams, "0x"),
         ).to.be.revertedWithoutReason();
       });
 
@@ -206,12 +204,12 @@ describe("TradeEntry", function () {
 
         await btcFeed.addRound(
           ethers.parseUnits("50000", 8),
-          defaultTradeParams.expiry
+          defaultTradeParams.expiry,
         );
 
         const extraData = ethers.zeroPadValue(ethers.toBeHex(1), 32);
         await expect(
-          tradeEntry.settleTrade(defaultTradeParams, extraData)
+          tradeEntry.settleTrade(defaultTradeParams, extraData),
         ).to.be.revertedWithCustomError(tradeEntry, "InvalidChainlinkRoundId");
       });
 
@@ -220,12 +218,12 @@ describe("TradeEntry", function () {
 
         await btcFeed.addRound(
           ethers.parseUnits("50000", 8),
-          BigInt(defaultTradeParams.expiry) + BigInt(1)
+          BigInt(defaultTradeParams.expiry) + BigInt(1),
         );
 
         const extraData = ethers.zeroPadValue(ethers.toBeHex(0), 32);
         await expect(
-          tradeEntry.settleTrade(defaultTradeParams, extraData)
+          tradeEntry.settleTrade(defaultTradeParams, extraData),
         ).to.be.revertedWithCustomError(tradeEntry, "InvalidChainlinkRoundId");
       });
 
@@ -234,16 +232,16 @@ describe("TradeEntry", function () {
 
         await btcFeed.addRound(
           ethers.parseUnits("50000", 8),
-          BigInt(defaultTradeParams.expiry) - BigInt(1)
+          BigInt(defaultTradeParams.expiry) - BigInt(1),
         );
         await btcFeed.addRound(
           ethers.parseUnits("55000", 8),
-          BigInt(defaultTradeParams.expiry)
+          BigInt(defaultTradeParams.expiry),
         );
 
         const extraData = ethers.zeroPadValue(ethers.toBeHex(0), 32);
         await expect(
-          tradeEntry.settleTrade(defaultTradeParams, extraData)
+          tradeEntry.settleTrade(defaultTradeParams, extraData),
         ).to.be.revertedWithCustomError(tradeEntry, "InvalidChainlinkRoundId");
       });
 
@@ -252,7 +250,7 @@ describe("TradeEntry", function () {
 
         await btcFeed.addRound(
           ethers.parseUnits("100000.1", 8),
-          BigInt(defaultTradeParams.expiry)
+          BigInt(defaultTradeParams.expiry),
         );
 
         const extraData = ethers.zeroPadValue(ethers.toBeHex(0), 32);
@@ -264,13 +262,13 @@ describe("TradeEntry", function () {
             tradeHash,
             ethers.parseUnits("100000.1", 18),
             owner,
-            ethers.parseUnits("200")
+            ethers.parseUnits("200"),
           );
 
         await expect(tx).to.changeTokenBalances(
           usdc,
           [owner, other, tradeEntry],
-          [ethers.parseUnits("200"), 0, ethers.parseUnits("-200")]
+          [ethers.parseUnits("200"), 0, ethers.parseUnits("-200")],
         );
 
         const details = await tradeEntry.tradeDetails(tradeHash);
@@ -282,7 +280,7 @@ describe("TradeEntry", function () {
 
         await btcFeed.addRound(
           ethers.parseUnits("99999", 8),
-          BigInt(defaultTradeParams.expiry)
+          BigInt(defaultTradeParams.expiry),
         );
 
         const extraData = ethers.zeroPadValue(ethers.toBeHex(0), 32);
@@ -294,13 +292,13 @@ describe("TradeEntry", function () {
             tradeHash,
             ethers.parseUnits("99999", 18),
             other,
-            ethers.parseUnits("200")
+            ethers.parseUnits("200"),
           );
 
         await expect(tx).to.changeTokenBalances(
           usdc,
           [owner, other, tradeEntry],
-          [0, ethers.parseUnits("200"), ethers.parseUnits("-200")]
+          [0, ethers.parseUnits("200"), ethers.parseUnits("-200")],
         );
 
         const details = await tradeEntry.tradeDetails(tradeHash);

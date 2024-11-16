@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.27;
 
-import {TradeParams} from "../Structs.sol";
+import { TradeParams } from "../Structs.sol";
 
 interface ITradeEntry {
     // EVENT
@@ -29,5 +29,5 @@ interface ITradeEntry {
     function settleTrade(
         TradeParams calldata params,
         bytes calldata extraData
-    ) external returns (address winner, uint256 payoff);
+    ) external payable returns (address winner, uint256 payoff);
 }

@@ -18,3 +18,5 @@ error TradeNotExpired();
 error InvalidChainlinkRoundId();
 
 error InvalidDataSource();
+
+error InvalidPythResponse();

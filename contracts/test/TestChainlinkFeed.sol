@@ -6,8 +6,6 @@ contract TestChainlinkFeed {
 
     uint256[] private timestamps;
 
-    constructor() {}
-
     function addRound(int256 price, uint256 timestamp) external {
         prices.push(price);
         timestamps.push(timestamp);

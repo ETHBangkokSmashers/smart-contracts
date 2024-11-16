@@ -17,6 +17,7 @@ import { SafeCast } from "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import {
     AggregatorV3Interface
 } from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+import { IPyth, PythStructs } from "@pythnetwork/pyth-sdk-solidity/IPyth.sol";
 
 import {
     TradeParams,
@@ -36,12 +37,14 @@ import {
     NotTradeInitiator,
     TradeNotExpired,
     InvalidChainlinkRoundId,
-    InvalidDataSource
+    InvalidDataSource,
+    InvalidPythResponse
 } from "./utils/Errors.sol";
 
 contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
     using SafeERC20 for IERC20;
     using SafeCast for int256;
+    using SafeCast for uint256;
 
     // CONSTANTS
 
@@ -51,9 +54,9 @@ contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
             "TradeParams(address depositAsset,address initiator,uint256 initiatorAmount,address acceptor,uint256 acceptorAmount,uint256 acceptionDeadline,uint256 expiry,uint32 observationAssetId,uint8 direction,uint256 price,uint8 dataSourceId,uint256 nonce)"
         );
 
-    uint8 constant CHAILINK_DECIMALS = 8;
+    uint32 constant CHAILINK_DECIMALS = 8;
 
-    uint8 constant TARGET_DECIMALS = 18;
+    uint32 constant TARGET_DECIMALS = 18;
 
     // STORAGE
 
@@ -66,6 +69,10 @@ contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
     // Data source configuration
 
     mapping(uint32 => address) public chainlinkAssetPriceFeeds;
+
+    IPyth public pyth;
+
+    mapping(uint32 => bytes32) public pythAssetFeedIds;
 
     // CONSTRUCTOR
 
@@ -93,6 +100,17 @@ contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
         address feedAddress
     ) external onlyOwner {
         chainlinkAssetPriceFeeds[assetId] = feedAddress;
+    }
+
+    function setPyth(IPyth _pyth) external onlyOwner {
+        pyth = _pyth;
+    }
+
+    function setPythAssetFeedId(
+        uint32 assetId,
+        bytes32 feedId
+    ) external onlyOwner {
+        pythAssetFeedIds[assetId] = feedId;
     }
 
     // MUTATIVE FUNCTIONS
@@ -164,7 +182,7 @@ contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
     function settleTrade(
         TradeParams calldata params,
         bytes calldata extraData
-    ) external returns (address winner, uint256 payoff) {
+    ) external payable returns (address winner, uint256 payoff) {
         // Checks
         bytes32 tradeHash = _hashTypedDataV4(_hashTradeParams(params));
         TradeDetails memory details = tradeDetails[tradeHash];
@@ -228,7 +246,7 @@ contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
 
     function _convertPrice(
         int256 price,
-        uint8 currentDecimals
+        uint32 currentDecimals
     ) private pure returns (uint256) {
         int256 convertedPrice;
         if (currentDecimals < TARGET_DECIMALS) {
@@ -250,7 +268,7 @@ contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
         uint32 assetId,
         uint256 timestamp,
         bytes calldata extraData
-    ) internal view returns (uint256) {
+    ) internal returns (uint256) {
         if (dataSourceId == CHAINLINK_DATA_SOURCE_ID) {
             AggregatorV3Interface priceFeed = AggregatorV3Interface(
                 chainlinkAssetPriceFeeds[assetId]
@@ -275,6 +293,29 @@ contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
             );
 
             return _convertPrice(answer, CHAILINK_DECIMALS);
+        } else if (dataSourceId == PYTH_DATA_SOURCE_ID) {
+            bytes32 priceFeedId = pythAssetFeedIds[assetId];
+
+            bytes[] memory updateDatas = new bytes[](1);
+            updateDatas[0] = extraData;
+            bytes32[] memory priceFeedIds = new bytes32[](1);
+            priceFeedIds[0] = priceFeedId;
+            PythStructs.PriceFeed[] memory priceFeeds = pyth
+                .parsePriceFeedUpdates{ value: msg.value }(
+                updateDatas,
+                priceFeedIds,
+                timestamp.toUint64(),
+                timestamp.toUint64()
+            );
+
+            require(priceFeeds.length == 1, InvalidPythResponse());
+            require(priceFeeds[0].id == priceFeedId, InvalidPythResponse());
+
+            return
+                _convertPrice(
+                    priceFeeds[0].price.price,
+                    uint32(-1 * priceFeeds[0].price.expo)
+                );
         } else {
             revert InvalidDataSource();
         }
