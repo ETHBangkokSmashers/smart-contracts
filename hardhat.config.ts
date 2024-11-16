@@ -48,6 +48,7 @@ const config: HardhatUserConfig = {
     apiKey: {
       sepolia: process.env.ETHSCAN_API_KEY ?? "",
       polygonAmoy: process.env.POLYGONSCAN_API_KEY ?? "",
+      arbitrumSepolia: process.env.ARBISCAN_API_KEY ?? "",
       baseSepolia: "abc",
       celoAlfajores: "abc",
       scrollSepolia: process.env.SCROLLSCAN_API_KEY ?? "",
@@ -64,7 +65,7 @@ const config: HardhatUserConfig = {
         chainId: 11155111,
         urls: {
           apiURL: "https://eth-sepolia.blockscout.com/api",
-          browserURL: "https://eth-sepolia.blockscout.com/",
+          browserURL: "https://eth-sepolia.blockscout.com",
         },
       },
       {
@@ -79,8 +80,8 @@ const config: HardhatUserConfig = {
         network: "arbitrumSepolia",
         chainId: 421614,
         urls: {
-          apiURL: "https://sepolia-explorer.arbitrum.io/api",
-          browserURL: "https://sepolia-explorer.arbitrum.io/",
+          apiURL: "https://api-sepolia.arbiscan.io/api",
+          browserURL: "https://sepolia.arbiscan.io",
         },
       },
       {
@@ -88,7 +89,7 @@ const config: HardhatUserConfig = {
         chainId: 84532,
         urls: {
           apiURL: "https://base-sepolia.blockscout.com/api",
-          browserURL: "https://base-sepolia.blockscout.com/",
+          browserURL: "https://base-sepolia.blockscout.com",
         },
       },
       {
@@ -96,7 +97,7 @@ const config: HardhatUserConfig = {
         chainId: 44787,
         urls: {
           apiURL: "https://celo-alfajores.blockscout.com/api",
-          browserURL: "https://celo-alfajores.blockscout.com/",
+          browserURL: "https://celo-alfajores.blockscout.com",
         },
       },
       {
@@ -104,12 +105,12 @@ const config: HardhatUserConfig = {
         chainId: 534351,
         urls: {
           apiURL: "https://sepolia.scrollscan.com/api",
-          browserURL: "https://sepolia.scrollscan.com/",
+          browserURL: "https://sepolia.scrollscan.com",
         },
         /*
         urls: {
           apiURL: "https://scroll-sepolia.blockscout.com/api",
-          browserURL: "https://scroll-sepolia.blockscout.com/"
+          browserURL: "https://scroll-sepolia.blockscout.com"
         }
         */
       },
@@ -118,12 +119,12 @@ const config: HardhatUserConfig = {
         chainId: 59144,
         urls: {
           apiURL: "https://api.lineascan.build/api",
-          browserURL: "https://lineascan.build/",
+          browserURL: "https://lineascan.build",
         },
         /*
         urls: {
           apiURL: "https://explorer.linea.build/api",
-          browserURL: "https://explorer.linea.build/"
+          browserURL: "https://explorer.linea.build"
         }
         */
       },
@@ -132,7 +133,7 @@ const config: HardhatUserConfig = {
         chainId: 296,
         urls: {
           apiURL: "https://server-verify.hashscan.io/",
-          browserURL: "https://hashscan.io/testnet/",
+          browserURL: "https://hashscan.io/testnet",
         },
       },
       {
@@ -140,7 +141,7 @@ const config: HardhatUserConfig = {
         chainId: 545,
         urls: {
           apiURL: "https://evm-testnet.flowscan.io/api",
-          browserURL: "https://evm-testnet.flowscan.io/",
+          browserURL: "https://evm-testnet.flowscan.io",
         },
       },
       {
@@ -148,7 +149,7 @@ const config: HardhatUserConfig = {
         chainId: 5003,
         urls: {
           apiURL: "https://explorer.sepolia.mantle.xyz/api",
-          browserURL: "https://explorer.sepolia.mantle.xyz/",
+          browserURL: "https://explorer.sepolia.mantle.xyz",
         },
       },
       {
@@ -156,7 +157,7 @@ const config: HardhatUserConfig = {
         chainId: 245022926,
         urls: {
           apiURL: "https://neon-devnet.blockscout.com/",
-          browserURL: "https://neon-devnet.blockscout.com/",
+          browserURL: "https://neon-devnet.blockscout.com",
         },
       },
       {
@@ -164,7 +165,7 @@ const config: HardhatUserConfig = {
         chainId: 88882,
         urls: {
           apiURL: "https://spicy-explorer.chiliz.com/api",
-          browserURL: "https://spicy-explorer.chiliz.com/",
+          browserURL: "https://spicy-explorer.chiliz.com",
         },
       },
     ],
