@@ -119,15 +119,6 @@ export const Config: NetworkConfig = {
       address: "0x98046Bd286715D3B0BC227Dd7a956b83D8978603",
     },
   },
-  kinto: {
-    chainlink: {
-      enabled: false,
-    },
-    pyth: {
-      enabled: true,
-      address: "0x2880aB155794e7179c9eE2e38200202908C17B43",
-    },
-  },
   neonDevnet: {
     chainlink: {
       enabled: false,
@@ -145,6 +136,15 @@ export const Config: NetworkConfig = {
     },
     pyth: {
       enabled: false,
+    },
+  },
+  chilizTestnet: {
+    chainlink: {
+      enabled: false,
+    },
+    pyth: {
+      enabled: true,
+      address: "0x23f0e8FAeE7bbb405E7A7C3d60138FCfd43d7509",
     },
   },
 };
