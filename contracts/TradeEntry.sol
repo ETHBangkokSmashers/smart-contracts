@@ -1,12 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.27;
 
-import {
-    OwnableUpgradeable
-} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import {
-    EIP712Upgradeable
-} from "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { EIP712 } from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {
     IERC20,
@@ -42,7 +38,7 @@ import {
     LengthMismatch
 } from "./utils/Errors.sol";
 
-contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
+contract TradeEntry is Ownable, EIP712, ITradeEntry {
     using SafeERC20 for IERC20;
     using SafeCast for int256;
     using SafeCast for uint256;
@@ -77,14 +73,7 @@ contract TradeEntry is OwnableUpgradeable, EIP712Upgradeable, ITradeEntry {
 
     // CONSTRUCTOR
 
-    constructor() {
-        //_disableInitializers();
-    }
-
-    function initialize() external initializer {
-        __Ownable_init(msg.sender);
-        __EIP712_init("TradeEntry", "1");
-    }
+    constructor() EIP712("TradeEntry", "1") Ownable(msg.sender) {}
 
     // CONFIGURATION FUNCTIONS
 

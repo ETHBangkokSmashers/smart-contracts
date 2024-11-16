@@ -30,7 +30,6 @@ describe("TradeEntry", function () {
 
     const TradeEntryFactory = await ethers.getContractFactory("TradeEntry");
     const tradeEntry = await TradeEntryFactory.deploy();
-    await tradeEntry.initialize();
 
     const TestERC20Factory = await ethers.getContractFactory("TestERC20");
     const usdc = await TestERC20Factory.deploy();
