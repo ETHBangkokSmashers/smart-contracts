@@ -23,24 +23,67 @@ found in table below
 | Mantle Sepolia    | [0x001BF4FAfe6b4ba7091d5e6D2b4ba0671882DE31](https://explorer.sepolia.mantle.xyz/address/0x001BF4FAfe6b4ba7091d5e6D2b4ba0671882DE31)   |
 | Neon Devnet       | [0x001BF4FAfe6b4ba7091d5e6D2b4ba0671882DE31](https://neon-devnet.blockscout.com/address/0x001BF4FAfe6b4ba7091d5e6D2b4ba0671882DE31)    |
 
+## Contract Structure
+
+Protocol's primary contract is `TradeEntry`. It exposes 3 functions for regular
+users:
+
+```
+function startTrade(
+    TradeParams calldata params,
+    bytes calldata initiatorSignature
+) external returns (bytes32 tradeHash)
+```
+
+Function accepts `params` object with initiator's bet and `initiatorSignature`
+(EIP712 signature of first object) Accepts initiator's and acceptor's deposits
+and starts a trade (bet) Returns `tradeHash` that serves as bet's identifier
+
+```
+function cancelTrade(TradeParams calldata params) external
+```
+
+Accepts `params` and cancels this bet's initiation (so other acceptor can't
+start it)
+
+```
+function settleTrade(
+    TradeParams calldata params,
+    bytes calldata extraData
+) external payable returns (address winner, uint256 payoff)
+```
+
+Accepts `paramts` object with bet and `extraData` containing oracle-specific
+data for price determination. Settles the bet based on the expiry price and
+transfers `payoff` to `winner`
+
 ## Usage
 
 ### Dependencies
 
 Make sure that you have Node and NPM installed. Run
 
-```
+````
+
 npm install
+
 ```
 
 To compile contracts run:
 
 ```
+
 npx hardhat compile
+
 ```
 
 To test contracts run:
 
 ```
+
 npx hardhat test
+
 ```
+
+```
+````
