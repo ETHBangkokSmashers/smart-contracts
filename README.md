@@ -6,7 +6,7 @@ deployment scripts for them.
 
 ## Deployments
 
-Contracts are deployed to 11 EVM networks. Addresses and explorer links can be
+Contracts are deployed to 12 EVM networks. Addresses and explorer links can be
 found in table below
 
 | Network           | Trade Entry                                                                                                                            |
@@ -22,6 +22,7 @@ found in table below
 | Flow Testnet      | [0x001BF4FAfe6b4ba7091d5e6D2b4ba0671882DE31](https://evm-testnet.flowscan.io/address/0x001BF4FAfe6b4ba7091d5e6D2b4ba0671882DE31)       |
 | Mantle Sepolia    | [0x001BF4FAfe6b4ba7091d5e6D2b4ba0671882DE31](https://explorer.sepolia.mantle.xyz/address/0x001BF4FAfe6b4ba7091d5e6D2b4ba0671882DE31)   |
 | Neon Devnet       | [0x001BF4FAfe6b4ba7091d5e6D2b4ba0671882DE31](https://neon-devnet.blockscout.com/address/0x001BF4FAfe6b4ba7091d5e6D2b4ba0671882DE31)    |
+| Chiliz Testnet    | [0x001BF4FAfe6b4ba7091d5e6D2b4ba0671882DE31](https://spicy-explorer.chiliz.com/0x001BF4FAfe6b4ba7091d5e6D2b4ba0671882DE31)             |
 
 ## Contract Structure
 

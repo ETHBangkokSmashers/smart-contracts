@@ -16,6 +16,6 @@ export async function getTradeEntry(): Promise<TradeEntry> {
 
 export async function getTestERC20(): Promise<TestERC20> {
   const deployments = await getDeployments();
-  const testERC20Address = deployments["TestERC20#TestERC20"];
+  const testERC20Address = deployments["TradeEntry#USDC"];
   return await ethers.getContractAt("TestERC20", testERC20Address);
 }
