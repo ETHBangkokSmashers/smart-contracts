@@ -63,27 +63,18 @@ transfers `payoff` to `winner`
 
 Make sure that you have Node and NPM installed. Run
 
-````
-
+```
 npm install
-
 ```
 
 To compile contracts run:
 
 ```
-
 npx hardhat compile
-
 ```
 
 To test contracts run:
 
 ```
-
 npx hardhat test
-
 ```
-
-```
-````
