@@ -148,7 +148,7 @@ const config: HardhatUserConfig = {
         network: "neonDevnet",
         chainId: 245022926,
         urls: {
-          apiURL: "https://neon-devnet.blockscout.com/",
+          apiURL: "https://neon-devnet.blockscout.com/api",
           browserURL: "https://neon-devnet.blockscout.com",
         },
       },
